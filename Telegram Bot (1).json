@@ -1,0 +1,113 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77b2e73c-fe1f-481c-b986-733ed35eadb4",
+      "name": "Telegram Trigger",
+      "webhookId": "63f43782-e55e-4e98-b01a-5de18e75bcfe",
+      "credentials": {
+        "telegramApi": {
+          "id": "4hTwSYwi6cgh6CRt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCMLPN0bG5u3T2t190QlRq3dt9wzG1GZQI",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n         \"text\": \"You're a witty and light-hearted AI. Always respond with a humorous twist and keep it short and fun — under 100 words:\\n{{ $json.message.text }}\"\n        }\n      ]\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "73cb49b1-1b39-4aa9-8693-bebd597253d8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json.message.chat.id }}",
+        "text": "={{$node[\"HTTP Request\"].json.candidates[0].content.parts[0].text}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "b64ee8c1-553b-4f8d-a28f-4feb55cfdee7",
+      "name": "Telegram",
+      "webhookId": "615fd36e-c9ab-4d5b-9a2b-128510d0d023",
+      "credentials": {
+        "telegramApi": {
+          "id": "4hTwSYwi6cgh6CRt",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e66d0f78-deba-4240-aad4-21a1d93ea318",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "66b3bd69257bdc421258e3fa0401dec16f9a2ad96d03c218e592d19fca99e280"
+  },
+  "id": "WARAVMJtf7lx5oKF",
+  "tags": []
+}
